@@ -15,14 +15,14 @@ return new class extends Migration {
         Schema::create('leaves', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')
-                ->constrained('id')
+                ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->enum('type', LeaveType::cases());
+            $table->string('type');
             $table->date('start_date');
             $table->date('end_date');
             $table->longText('reason')->nullable();
-            $table->enum('status', LeaveStatus::cases())->default(LeaveStatus::Pending);
+            $table->string('status')->default(LeaveStatus::Pending->value);
             $table->timestamps();
         });
     }
