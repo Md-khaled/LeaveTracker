@@ -27,7 +27,7 @@
                             <td>{{ leave.start_date }}</td>
                             <td>{{ leave.end_date }}</td>
                             <td>{{ leave.reason }}</td>
-                            <td>{{ leave.status_label }}</td>
+                            <td>{{ leave.status }}</td>
                             <td>
                                 <a href="#" class="btn btn-sm btn-primary">Edit</a> <button type="button" class="btn btn-sm btn-danger" @click="deleteLeave(leave.id)">Delete</button>
                             </td>
