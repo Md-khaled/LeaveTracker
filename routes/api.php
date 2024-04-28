@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LeaveController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,5 +27,11 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     });
     Route::controller(AuthController::class)->group(function() {
         Route::post('/logout', 'logout')->name('logout');
+    });
+    Route::controller(LeaveController::class)->group(function() {
+        Route::get('/leaves', 'leaves')->name('leaves');
+        Route::post('/leaves', 'store')->name('leaves-store');
+        Route::get('/leave-statuses', 'leaveStatus')->name('leave-status');
+        Route::get('/leave-types', 'leaveTypes')->name('leave-types');
     });
 });

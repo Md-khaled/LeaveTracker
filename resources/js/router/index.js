@@ -6,6 +6,7 @@ import Dashboard from "@/components/Dashboard.vue";
 import About from "@/components/About.vue";
 import Contact from "@/components/Contact.vue";
 import useUserStore from "@/stores/user";
+import LeaveTable from "@/components/LeaveTable.vue";
 
 const routes = [
     {
@@ -38,7 +39,7 @@ const routes = [
     {
         name: "dashboard",
         path: "/dashboard",
-        component: Dashboard,
+        component: LeaveTable,
         meta: {
             middleware: "auth",
             title: "Dashboard",

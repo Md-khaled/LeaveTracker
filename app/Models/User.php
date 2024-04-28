@@ -33,6 +33,10 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    public function leaves()
+    {
+        return $this->hasMany(Leave::class);
+    }
 
     /**
      * The attributes that should be cast.
