@@ -4,16 +4,53 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
 
+    public function singleUser()
+    {
+        return response()->json([
+            'success' => true,
+            'data' => Auth::user(),
+        ], 200);
+    }
+
+    public function userList()
+    {
+        $users = User::get();
+        return response()->json([
+            'success' => true,
+            'data' => $users,
+        ], 200);
+    }
+
+    public function userApproved(Request $request)
+    {
+        $user = User::find($request->id);
+
+        if ($user) {
+            $user->update([
+                'account_status' => $request->account_status,
+            ]);
+            return response()->json(
+                [
+                    'success' => true,
+                    'message' => 'User Updated'
+                ], Response::HTTP_OK);
+        } else {
+            return response()->json(['success' => false, 'error' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
+
+    }
+
     /**
      * Store a new user.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function register(Request $request)
@@ -44,7 +81,7 @@ class UserController extends Controller
     /**
      * Authenticate the user.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function login(Request $request)
@@ -54,8 +91,7 @@ class UserController extends Controller
             'password' => 'required'
         ]);
 
-        if(Auth::attempt($credentials))
-        {
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return response()->json([
                 'status' => 'success',
@@ -69,7 +105,8 @@ class UserController extends Controller
             'message' => 'Your provided credentials do not match in our records.',
         ]);
 
-    } 
+    }
+
     /**
      * Fetch user data
      */
@@ -83,7 +120,7 @@ class UserController extends Controller
     /**
      * Log out the user from application.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function logout(Request $request)
@@ -95,5 +132,5 @@ class UserController extends Controller
             'status' => 'success',
             'message' => 'Logout',
         ]);
-    }   
+    }
 }

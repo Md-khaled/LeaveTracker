@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 
 export const useLeaveStore = defineStore('leaves', {
     state: () => ({
@@ -7,11 +7,28 @@ export const useLeaveStore = defineStore('leaves', {
         statuses: [],
         types: [],
         errors: null,
+        metaInfo: null,
     }),
+    getters: {
+        getHeaderConfig() {
+            const getToken = localStorage.getItem('admin_token');
+            const config = {
+                headers: {
+                    "Authorization": `Bearer ${getToken}`,
+                    "Accept": "application/json",
+                }
+            }
+            return config;
+        }
+    },
     actions: {
+        setMetaInfo(info) {
+            this.metaInfo = info;
+        },
         async fetchLeaves() {
             try {
-                const response = await axios.get('/api/leaves');
+                const headerConfig = this.getHeaderConfig;
+                const response = await axios.get('/api/leaves', headerConfig);
                 this.leaves = response.data.data.leaves.data;
             } catch (error) {
                 console.error(error);
@@ -29,11 +46,11 @@ export const useLeaveStore = defineStore('leaves', {
         },
         async fetchStatuses() {
             try {
-              const response = await axios.get('/api/leave-statuses');
-              this.statuses = response.data.data.statuses;
+                const response = await axios.get('/api/leave-statuses');
+                this.statuses = response.data.data.statuses;
             } catch (error) {
-              console.error(error);
-              this.errors = error.response.data.errors;
+                console.error(error);
+                this.errors = error.response.data.errors;
             }
         },
         async fetchLeaveTypes() {

@@ -17,6 +17,7 @@ class Leave extends Model
         'end_date',
         'reason',
         'status',
+        'comment_by_admin'
     ];
     public function user()
     {

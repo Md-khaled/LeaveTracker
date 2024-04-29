@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import router from "@/router";
 
-export default defineStore("admin-auth", {
+export default defineStore("admin", {
     state: () => ({
         isAdminLoggedIn: false,
         errorInfo: "",
@@ -11,6 +11,15 @@ export default defineStore("admin-auth", {
         setLoggedIn(state) {
             return state.isAdminLoggedIn;
         },
+        getHeaderConfig(state) {
+            const config = {
+                headers: {
+                    "Authorization" : `Bearer ${state.user.currentToken}`,
+                    "Accept": "application/json",
+                }
+            }
+            return config;
+        }
     },
     actions: {
         authenticate(values) {
@@ -18,9 +27,11 @@ export default defineStore("admin-auth", {
                 axios
                     .post("/api/admin/login", values)
                     .then((response) => {
-                        this.user = response.data.data;
+                        let adminResponse = response.data
+                        this.user = adminResponse.data;
 
-                        if (response.data.success) {
+                        if (adminResponse.success) {
+                            localStorage.setItem('admin_token', adminResponse.token);
                             this.isAdminLoggedIn = true;
                             this.errorInfo = "";
                             router.push({name: "admin-dashboard"});

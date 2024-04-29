@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LeaveController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,8 +23,13 @@ Route::controller(AuthController::class)->group(function() {
 });
 
 Route::group(['middleware' => 'auth:sanctum'], function() {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
+//    Route::get('/user', function (Request $request) {
+//        return $request->user();
+//    });
+    Route::controller(UserController::class)->group(function() {
+        Route::get('/user', 'singleUser')->name('user.single');
+        Route::get('/users', 'userList')->name('user.list');
+        Route::post('/user-approved', 'userApproved')->name('user.approved');
     });
     Route::controller(AuthController::class)->group(function() {
         Route::post('/logout', 'logout')->name('logout');

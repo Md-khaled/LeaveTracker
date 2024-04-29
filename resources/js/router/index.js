@@ -9,6 +9,7 @@ import Contact from "@/components/Contact.vue";
 import useUserStore from "@/stores/user";
 import useAdminStore from "@/stores/admin/adminAuth";
 import LeaveTable from "@/components/LeaveTable.vue";
+import AdminDashboard from "@/components/admin/AdminDashboard.vue";
 
 const routes = [
     {
@@ -85,7 +86,7 @@ const routes = [
             {
                 name: "admin-dashboard",
                 path: "dashboard",
-                component: Dashboard,
+                component: AdminDashboard,
                 meta: {
                     middleware: "auth",
                     title: "Admin Dashboard",
@@ -129,14 +130,15 @@ router.beforeEach((to, from, next) => {
 
 function handleAdminRouteNavigation(to, next) {
     const adminStore = useAdminStore();
+    const isAdminLoggedIn = localStorage.getItem('admin_token')
     if (to.meta.middleware) {
         if (to.meta.middleware === "guest") {
-            if (adminStore.isAdminLoggedIn) {
+            if (isAdminLoggedIn) {
                 next({ name: "admin-dashboard" });
             }
             next();
         } else {
-            if (adminStore.isAdminLoggedIn) {
+            if (isAdminLoggedIn) {
                 next();
             } else {
                 next({ name: "admin-login" });

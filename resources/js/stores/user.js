@@ -5,13 +5,58 @@ export default defineStore("user", {
         isLoggedIn: false,
         errorInfo: "",
         user: {},
+        userList: {},
+        metaInfo: null,
     }),
     getters: {
         setLoggedIn(state) {
             return state.isLoggedIn;
         },
+        getHeaderConfig() {
+            const getToken = localStorage.getItem('admin_token');
+            const config = {
+                headers: {
+                    "Authorization": `Bearer ${getToken}`,
+                    "Accept": "application/json",
+                }
+            }
+            return config;
+        }
     },
     actions: {
+        setMetaInfo(info) {
+            this.metaInfo = info;
+        },
+        async fetchUsers() {
+            const headerConfig = this.getHeaderConfig;
+            await axios
+                .get("/api/users", headerConfig)
+                .then((response) => {
+                    if (response.data) {
+                        this.userList = response.data.data;
+                    } else {
+                        this.userList = {};
+                    }
+                })
+                .catch((error) => {
+                    return error;
+                });
+        },
+        async approvedUser(data) {
+            const headerConfig = this.getHeaderConfig;
+            await axios
+                .post("/api/user-approved", data, headerConfig)
+                .then((response) => {
+                    if (response.data) {
+                        this.userList = response.data.data;
+                    } else {
+                        this.userList = {};
+                    }
+                })
+                .catch((error) => {
+                    return error;
+                });
+        },
         authenticate(values) {
             return axios.get("/sanctum/csrf-cookie").then((response) => {
                 axios
