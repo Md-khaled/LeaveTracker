@@ -25,6 +25,7 @@ class LeaveController extends Controller
             'message' => 'Successfully Logged In!',
         ]);
     }
+
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -55,6 +56,24 @@ class LeaveController extends Controller
         } else {
             return response()->json(['success' => false, 'error' => 'User not found'], Response::HTTP_NOT_FOUND);
         }
+
+    }
+
+    public function leaveStatistics()
+    {
+        $leave = Leave::query();
+        $total_count = $leave->count();
+        $leaveStatistics = $leave
+            ->select('status', \DB::raw('COUNT(*) as status_count'))
+            ->groupBy('status')
+            ->pluck('status_count', 'status')
+            ->toArray();
+        $leaveStatistics['total_request'] = $total_count ?? 0;
+        return response()->json(
+            [
+                'success' => true,
+                'data' => $leaveStatistics,
+            ], Response::HTTP_OK);
 
     }
 

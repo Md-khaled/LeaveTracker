@@ -8,6 +8,7 @@ export const useLeaveStore = defineStore('leaves', {
         types: [],
         errors: null,
         metaInfo: null,
+        statistics: []
     }),
     getters: {
         getHeaderConfig() {
@@ -40,6 +41,21 @@ export const useLeaveStore = defineStore('leaves', {
             await axios
                 .post("/api/leave-approved", data, headerConfig)
                 .then((response) => {
+                })
+                .catch((error) => {
+                    return error;
+                });
+        },
+        async fetchLeaveStatistics() {
+            const headerConfig = this.getHeaderConfig;
+            await axios
+                .get("/api/leave-statistics", headerConfig)
+                .then((response) => {
+                    if (response.data) {
+                        this.statistics = response.data.data;
+                    } else {
+                        this.statistics = [];
+                    }
                 })
                 .catch((error) => {
                     return error;

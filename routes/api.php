@@ -40,5 +40,6 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
         Route::get('/leave-statuses', 'leaveStatus')->name('leave-status');
         Route::get('/leave-types', 'leaveTypes')->name('leave-types');
         Route::post('/leave-approved', 'leaveApproved')->name('leave.approved');
+        Route::get('/leave-statistics', 'leaveStatistics')->name('leave.statistics');
     });
 });
