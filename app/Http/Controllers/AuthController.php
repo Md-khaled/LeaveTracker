@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Role;
 use App\Models\User;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -56,12 +58,14 @@ class AuthController extends Controller
 
         if(Auth::attempt($credentials))
         {
+            $user = Auth::user();
             $request->session()->regenerate();
             return response()->json([
-                'status' => 'success',
-                'data' => Auth::user(),
+                'status' => true,
+                'data' => $user,
                 'message' => 'Successfully Logged In!',
-            ]);
+                'token' => $user->createToken('mobile', ['role:', Role::Employee->value])->plainTextToken
+            ], Response::HTTP_OK);
         }
 
         return response()->json([

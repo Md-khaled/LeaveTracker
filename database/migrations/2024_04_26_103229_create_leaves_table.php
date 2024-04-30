@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->date('start_date');
             $table->date('end_date');
             $table->longText('reason')->nullable();
+            $table->longText('comment_by_admin')->nullable();
             $table->string('status')->default(LeaveStatus::Pending->value);
             $table->timestamps();
         });

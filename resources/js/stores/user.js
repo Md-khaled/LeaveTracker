@@ -62,10 +62,11 @@ export default defineStore("user", {
                 axios
                     .post("/api/login", values)
                     .then((response) => {
-                        this.user = response.data.data;
-
-                        if (response.data.status == "success") {
+                        let userResponse = response.data;
+                        if (userResponse.status) {
+                            this.user = userResponse.data;
                             this.errorInfo = "";
+                            localStorage.setItem('access_token', userResponse.token);
                             router.push({ name: "dashboard" });
                         } else {
                             this.errorInfo = response.data.message;

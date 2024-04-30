@@ -130,7 +130,7 @@ router.beforeEach((to, from, next) => {
 
 function handleAdminRouteNavigation(to, next) {
     const adminStore = useAdminStore();
-    const isAdminLoggedIn = localStorage.getItem('admin_token')
+    const isAdminLoggedIn = localStorage.getItem('access_token')
     if (to.meta.middleware) {
         if (to.meta.middleware === "guest") {
             if (isAdminLoggedIn) {

@@ -31,9 +31,10 @@ export default defineStore("admin", {
                         this.user = adminResponse.data;
 
                         if (adminResponse.success) {
-                            localStorage.setItem('admin_token', adminResponse.token);
+                            localStorage.setItem('access_token', adminResponse.token);
                             this.isAdminLoggedIn = true;
                             this.errorInfo = "";
+                            console.log('here come')
                             router.push({name: "admin-dashboard"});
                         } else {
                             this.errorInfo = response.data.message;
