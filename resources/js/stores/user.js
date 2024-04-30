@@ -13,7 +13,7 @@ export default defineStore("user", {
             return state.isLoggedIn;
         },
         getHeaderConfig() {
-            const getToken = localStorage.getItem('admin_token');
+            const getToken = localStorage.getItem('access_token');
             const config = {
                 headers: {
                     "Authorization": `Bearer ${getToken}`,
