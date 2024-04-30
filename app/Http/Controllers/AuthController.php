@@ -88,8 +88,8 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::logout();
-//        Auth::user()->tokens()->delete();
+//        Auth::logout();
+        Auth::user()->tokens()->delete();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return response()->json([
