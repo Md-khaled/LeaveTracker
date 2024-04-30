@@ -6,6 +6,7 @@ use App\Enums\LeaveStatus;
 use App\Enums\LeaveType;
 use App\Models\Leave;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
@@ -35,6 +36,26 @@ class LeaveController extends Controller
 
         $leave = Auth::user()->leaves()->create($validatedData);
         return response()->json(['status' => 'success', 'data' => $leave], 201);
+    }
+
+    public function leaveApproved(Request $request)
+    {
+        $leave = Leave::find($request->id);
+
+        if ($leave) {
+            $leave->update([
+                'status' => $request->status,
+                'comment_by_admin' => $request->comment_by_admin,
+            ]);
+            return response()->json(
+                [
+                    'success' => true,
+                    'message' => 'User Updated'
+                ], Response::HTTP_OK);
+        } else {
+            return response()->json(['success' => false, 'error' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
+
     }
 
     public function leaveStatus(Request $request)

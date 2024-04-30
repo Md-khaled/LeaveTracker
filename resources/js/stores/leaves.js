@@ -35,6 +35,16 @@ export const useLeaveStore = defineStore('leaves', {
                 this.errors = error.response.data.errors;
             }
         },
+        async approvedLeave(data) {
+            const headerConfig = this.getHeaderConfig;
+            await axios
+                .post("/api/leave-approved", data, headerConfig)
+                .then((response) => {
+                })
+                .catch((error) => {
+                    return error;
+                });
+        },
         async fetchUsers() {
             try {
                 const response = await axios.get('/api/users');
