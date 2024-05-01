@@ -37,7 +37,8 @@ class LeaveController extends Controller
         ]);
 
         $leave = Auth::user()->leaves()->create($validatedData);
-        return response()->json(['status' => 'success', 'data' => $leave], 201);
+        LeaveActionNotification::dispatch($leave, LeaveStatus::Pending->value);
+        return response()->json(['status' => 'success', 'data' => $leave], Response::HTTP_OK);
     }
 
     public function leaveApproved(Request $request)
@@ -49,7 +50,7 @@ class LeaveController extends Controller
                 'status' => $request->status,
                 'comment_by_admin' => $request->comment_by_admin,
             ]);
-            LeaveActionNotification::dispatch($leave, $leave->status);
+            LeaveActionNotification::dispatch($leave, $leave->status->value);
             return response()->json(
                 [
                     'success' => true,
@@ -95,9 +96,9 @@ class LeaveController extends Controller
         $data['types'] = LeaveType::cases();
 
         return response()->json([
-            'status' => 200,
+            'status' => true,
             'data' => $data,
             'message' => 'success',
-        ]);
+        ], Response::HTTP_OK);
     }
 }

@@ -20,7 +20,7 @@ class LeaveActionNotificationMail extends Mailable
     public function __construct(Leave $leaveRequest, $actionType)
     {
         $this->leaveRequest = $leaveRequest;
-        $this->actionType = $actionType->value;
+        $this->actionType = $actionType;
     }
 
     /**
