@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\LeaveStatus;
 use App\Enums\LeaveType;
+use App\Events\LeaveActionNotification;
 use App\Models\Leave;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -48,6 +49,7 @@ class LeaveController extends Controller
                 'status' => $request->status,
                 'comment_by_admin' => $request->comment_by_admin,
             ]);
+            LeaveActionNotification::dispatch($leave, $leave->status);
             return response()->json(
                 [
                     'success' => true,
