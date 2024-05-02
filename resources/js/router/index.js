@@ -131,20 +131,22 @@ router.beforeEach((to, from, next) => {
 function handleAdminRouteNavigation(to, next) {
     const adminStore = useAdminStore();
     const isAdminLoggedIn = localStorage.getItem('access_token')
-    if (to.meta.middleware) {
-        if (to.meta.middleware === "guest") {
-            if (isAdminLoggedIn) {
-                next({ name: "admin-dashboard" });
-            }
-            next();
-        } else {
-            if (isAdminLoggedIn) {
+    adminStore.authCheck().then((data) => {
+        if (to.meta.middleware) {
+            if (to.meta.middleware === "guest") {
+                if (adminStore.isAdminLoggedIn) {
+                    next({ name: "admin-dashboard" });
+                }
                 next();
             } else {
-                next({ name: "admin-login" });
+                if (adminStore.isAdminLoggedIn) {
+                    next();
+                } else {
+                    next({ name: "admin-login" });
+                }
             }
         }
-    }
+    });
 }
 
 function handleEmployeeRouteNavigation(to, next) {

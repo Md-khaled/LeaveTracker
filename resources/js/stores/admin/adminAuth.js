@@ -6,6 +6,7 @@ export default defineStore("admin", {
         isAdminLoggedIn: false,
         errorInfo: "",
         user: {},
+        role: 'admin',
     }),
     getters: {
         setLoggedIn(state) {
@@ -14,7 +15,7 @@ export default defineStore("admin", {
         getHeaderConfig(state) {
             const config = {
                 headers: {
-                    "Authorization" : `Bearer ${state.user.currentToken}`,
+                    "Authorization": `Bearer ${state.user.currentToken}`,
                     "Accept": "application/json",
                 }
             }
@@ -32,9 +33,9 @@ export default defineStore("admin", {
 
                         if (adminResponse.success) {
                             localStorage.setItem('access_token', adminResponse.token);
+                            localStorage.setItem('access_role', this.role);
                             this.isAdminLoggedIn = true;
                             this.errorInfo = "";
-                            console.log('here come')
                             router.push({name: "admin-dashboard"});
                         } else {
                             this.errorInfo = response.data.message;
@@ -50,25 +51,40 @@ export default defineStore("admin", {
             });
         },
         async authCheck() {
-            await axios
-                .get("/api/admin/me")
+            this.isAdminLoggedIn = !!localStorage.getItem('access_token')
+            // await axios
+            //     .get("/api/admin/me")
+            //     .then((response) => {
+            //         if (response.data) {
+            //             this.user = response.data;
+            //
+            //             this.isAdminLoggedIn = true;
+            //         } else {
+            //             this.user = {};
+            //             this.isAdminLoggedIn = false;
+            //         }
+            //     })
+            //     .catch((error) => {
+            //         return error;
+            //     });
+        },
+        adminlogout() {
+            const headerConfig = this.getHeaderConfig;
+            axios
+                .post("/api/admin/logout", headerConfig)
                 .then((response) => {
                     if (response.data) {
-                        this.user = response.data;
-
-                        this.isAdminLoggedIn = true;
+                        localStorage.removeItem('access_token')
+                        localStorage.removeItem('access_role')
+                        this.isAdminLoggedIn = false;
+                        router.push({name: "admin-login"});
                     } else {
-                        this.user = {};
                         this.isAdminLoggedIn = false;
                     }
                 })
                 .catch((error) => {
                     return error;
                 });
-        },
-        logout() {
-            this.isAdminLoggedIn = false;
-            router.push({name: "admin-login"});
         },
     },
 });

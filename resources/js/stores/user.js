@@ -1,5 +1,6 @@
-import { defineStore } from "pinia";
+import {defineStore} from "pinia";
 import router from "@/router";
+
 export default defineStore("user", {
     state: () => ({
         isLoggedIn: false,
@@ -7,6 +8,7 @@ export default defineStore("user", {
         user: {},
         userList: {},
         metaInfo: null,
+        role: 'employee'
     }),
     getters: {
         setLoggedIn(state) {
@@ -67,7 +69,8 @@ export default defineStore("user", {
                             this.user = userResponse.data;
                             this.errorInfo = "";
                             localStorage.setItem('access_token', userResponse.token);
-                            router.push({ name: "dashboard" });
+                            localStorage.setItem('access_role', this.role);
+                            router.push({name: "dashboard"});
                         } else {
                             this.errorInfo = response.data.message;
                             console.log(this.errorInfo);
@@ -82,13 +85,33 @@ export default defineStore("user", {
             });
         },
         async authCheck() {
-            await axios
-                .get("/api/user")
+            this.isLoggedIn = !!localStorage.getItem('access_token')
+            // await axios
+            //     .get("/api/user")
+            //     .then((response) => {
+            //         if (response.data) {
+            //             this.user = response.data;
+            //
+            //             this.isLoggedIn = true;
+            //         } else {
+            //             this.user = {};
+            //             this.isLoggedIn = false;
+            //         }
+            //     })
+            //     .catch((error) => {
+            //         return error;
+            //     });
+        },
+        logout() {
+            const headerConfig = this.getHeaderConfig;
+            axios
+                .post("/api/logout", headerConfig)
                 .then((response) => {
                     if (response.data) {
-                        this.user = response.data;
-
-                        this.isLoggedIn = true;
+                        localStorage.removeItem('access_token')
+                        localStorage.removeItem('access_role')
+                        this.isLoggedIn = false;
+                        router.push({name: "login"});
                     } else {
                         this.user = {};
                         this.isLoggedIn = false;
@@ -97,10 +120,6 @@ export default defineStore("user", {
                 .catch((error) => {
                     return error;
                 });
-        },
-        logout() {
-            this.isLoggedIn = false;
-            router.push({ name: "login" });
         },
     },
 });
